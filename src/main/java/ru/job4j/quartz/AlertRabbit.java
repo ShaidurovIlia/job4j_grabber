@@ -13,11 +13,13 @@ import static org.quartz.TriggerBuilder.newTrigger;
 public class AlertRabbit {
     public static void main(String[] args) {
         try {
+            Properties properties = readProperties();
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
             JobDetail jod = newJob(Rabbit.class).build();
             SimpleScheduleBuilder times = simpleSchedule()
-                    .withIntervalInSeconds(10)
+                    .withIntervalInSeconds(Integer.parseInt(properties
+                            .getProperty("rabbit.interval")))
                     .repeatForever();
             Trigger trigger = newTrigger()
                     .startNow()
