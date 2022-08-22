@@ -19,20 +19,22 @@ public class HabrCareerParse {
 
     public static void main(String[] args) throws IOException {
         HabrCareerDateTimeParser dateTimeParser = new HabrCareerDateTimeParser();
-        Connection connection = Jsoup.connect(PAGE_LINK);
-        Document document = connection.get();
-        Elements rows = document.select(".vacancy-card__inner");
-        rows.forEach(row -> {
-            Element titleElement = row.select(".vacancy-card__title").first();
-            Element linkElement = titleElement.child(0);
-            String vacancyName = titleElement.text();
+        for (int page = 1; page <= 5; page++) {
+            Connection connection = Jsoup.connect(PAGE_LINK + "?page=" + page);
+            Document document = connection.get();
+            Elements rows = document.select(".vacancy-card__inner");
+            rows.forEach(row -> {
+                Element titleElement = row.select(".vacancy-card__title").first();
+                Element linkElement = titleElement.child(0);
+                String vacancyName = titleElement.text();
 
-            LocalDateTime date = dateTimeParser.parse(row.select(".vacancy-card__date")
-                    .first()
-                    .child(0)
-                    .attr("datetime"));
-            String link = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
-            System.out.printf("%s %s %s %n", vacancyName, link, date);
-        });
+                LocalDateTime date = dateTimeParser.parse(row.select(".vacancy-card__date")
+                        .first()
+                        .child(0)
+                        .attr("datetime"));
+                String link = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
+                System.out.printf("%s %s %s %n", vacancyName, link, date);
+            });
+        }
     }
 }
