@@ -41,14 +41,11 @@ public class HabrCareerParse implements Parse {
                     Connection connection = Jsoup.connect(String.format(linked + i));
                     Document document = connection.get();
                     Elements rows = document.select(".vacancy-card__inner");
-                    if (rows.size() == 0) {
-                        break;
-                    }
                     for (Element element : rows) {
                         list.add(createPost(element));
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new IllegalArgumentException("Program execution aborted");
                 }
         }
         return list;
